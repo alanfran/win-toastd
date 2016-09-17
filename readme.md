@@ -1,7 +1,6 @@
 # toastd - A networked toast daemon for Windows.
 
-Designed for Windows users who want to receive notifications from another
-machine. Particularly, from within virtual machine guests.
+toastd lets Windows 10 users receive notifications from another machine. It was designed to work with virtual machine guests, so external IP addresses are ignored by default.
 
 This application listens for requests on a port (default: 8092)
 with the following optional query parameters:
