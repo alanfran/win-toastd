@@ -25,7 +25,7 @@ func handler(c *gin.Context) {
   notification := toast.Notification{
       AppID: app,
       Title: title,
-      Message: strings.Replace(msg, "&", "&", -1),
+      Message: strings.Replace(msg, "&", "and", -1),
       Icon: icon,
   }
 
