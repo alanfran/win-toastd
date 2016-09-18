@@ -13,6 +13,7 @@ import (
   "log"
   "flag"
   "net"
+  "strings"
 )
 
 func handler(c *gin.Context) {
@@ -24,7 +25,7 @@ func handler(c *gin.Context) {
   notification := toast.Notification{
       AppID: app,
       Title: title,
-      Message: msg,
+      Message: strings.Replace(msg, "&", "&", -1),
       Icon: icon,
   }
 

@@ -9,9 +9,14 @@ with the following optional query parameters:
   * msg:       The message body.
   * icon:      Path to an icon on your Windows system.
 
-You will have to convert your spaces to + or %20 in your scripts. If you
-wish to encode a plus sign in your toast, convert it to %2b. This script will
-ignore any ampersands in your parameter values.
+Encode the following reserved characters in your query parameters.
+
+| Desired Character |  URL Encoding  | Output |
+|:-----------------:|:--------------:|:------:|
+| space             | + or %20       |   ` `  |
+| +                 | %2b            |   `+`  |
+| &                 | %26            |  `and` |
+| "                 | \"             |   `"`  |
 
 ##Example request:
 
