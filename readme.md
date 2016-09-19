@@ -8,7 +8,7 @@ GET queries and JSON POSTs. Messages containing ampersands (`&`) are not support
 ##Parameters:
   * AppID:       The name of the application. Toasts are grouped by app in the notification center.
   * Title:       The title of the toast.
-  * Message      The message body.
+  * Message:     The message body.
   * Icon:        Path to an icon on your Windows system.
 
 ###GET Query
@@ -45,3 +45,15 @@ POST JSON:
   `-allow-external`      Allows requests from external IPs.  ex: `win-toastd -allow-external`
 
 **Warning: Only use -allow-external with a well-configured firewall.**
+
+##Persisting toasts in the Action Center
+
+You must set a registry key for each `AppID` whose notifications you would like to persist in the Action Center.
+
+For example, if you want your irssi notifications to persist, add the key:
+`HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Notifications\Settings\irssi`
+with a DWORD named `ShowInActionCenter` with value `1`.
+
+I will look into automating this with a parameter in the toastd API.
+
+Thanks to "Passing By" for the solution in [this article's](https://deploywindows.info/2015/12/01/powershell-can-i-use-balloons-toasts-and-notifications/) comments, and Mattias Fors for creating the article.
