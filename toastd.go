@@ -17,18 +17,16 @@ import (
 )
 
 func handler(c *gin.Context) {
-  app := c.DefaultQuery("app", "toastd")
-  title := c.DefaultQuery("title", "")
-  msg := c.DefaultQuery("msg", "")
-  icon := c.DefaultQuery("icon", "")
+  var notification toast.Notification
 
-  notification := toast.Notification{
-      AppID: app,
-      Title: title,
-      Message: strings.Replace(msg, "&", "and", -1),
-      Icon: icon,
+  // handles JSON, URL query parameters...
+  c.Bind(&notification)
+
+  if notification.AppID == "" {
+    notification.AppID = "toastd"
   }
 
+  notification = sanitize(notification)
   err := notification.Push()
   if err != nil {
       log.Fatalln(err)
@@ -37,17 +35,17 @@ func handler(c *gin.Context) {
 
 func gatekeeper(allowExternal bool) gin.HandlerFunc {
   return func(c *gin.Context) {
-    if !allowExternal {
-      addresses, err := net.InterfaceAddrs()
-      if err != nil {
-        c.AbortWithStatus(403)
-      }
+    if allowExternal { return }
 
-      addr := c.ClientIP()
+    addresses, err := net.InterfaceAddrs()
+    if err != nil {
+      c.AbortWithStatus(403)
+    }
 
-      if !contains(addresses, addr) && addr != "::1"{
-        c.AbortWithStatus(403)
-      }
+    addr := c.ClientIP()
+
+    if !contains(addresses, addr) && addr != "::1"{
+      c.AbortWithStatus(403)
     }
   }
 }
@@ -65,6 +63,17 @@ func contains(haystack []net.Addr, needle string) bool {
   }
   return false
 }
+
+// PowerShell does not like ampersands. Attempts to escape the character have been unsuccessful.
+// Waiting on an upstream fix.
+func sanitize(n toast.Notification) toast.Notification {
+  n.AppID = strings.Replace(n.AppID, "&", "+", -1)
+  n.Title = strings.Replace(n.Title, "&", "+", -1)
+  n.Message = strings.Replace(n.Message, "&", "+", -1)
+
+  return n
+}
+
 func main() {
   port := flag.String("port", "8092", "The port you want to listen to. Default: 8092")
   allowExternal := flag.Bool("allow-external", false, "Allow requests from external IP addresses. {true, false} Default: false")
@@ -76,5 +85,6 @@ func main() {
   r.Use(gatekeeper(*allowExternal))
 
   r.GET("/", handler)
+  r.POST("/", handler)
   r.Run(":"+*port)
 }

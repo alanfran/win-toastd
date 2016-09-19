@@ -2,26 +2,39 @@
 
 toastd lets Windows 10 users receive notifications from another machine. It was designed to work with virtual machine guests, so external IP addresses are ignored by default.
 
-This application listens for requests on a port (default: 8092)
-with the following optional query parameters:
-  * app:       The name of the application. Toasts are grouped by app in the notification center.
-  * title:     The title of the toast.
-  * msg:       The message body.
-  * icon:      Path to an icon on your Windows system.
+This application listens for requests on port 8092 by default, and it accepts
+GET queries and JSON POSTs. Messages containing ampersands (`&`) are not supported at this time, and they will be converted to `+`.
 
+##Parameters:
+  * AppID:       The name of the application. Toasts are grouped by app in the notification center.
+  * Title:       The title of the toast.
+  * Message      The message body.
+  * Icon:        Path to an icon on your Windows system.
+
+###GET Query
 Encode the following reserved characters in your query parameters.
 
 | Desired Character |  URL Encoding  | Output |
 |:-----------------:|:--------------:|:------:|
-| space             | + or %20       |   ` `  |
-| +                 | %2b            |   `+`  |
-| &                 | %26            |  `and` |
-| "                 | \"             |   `"`  |
+| ` ` (space)       | `+` or `%20`   |   ` `  |
+| `+`               | `%2b`          |   `+`  |
+| `&`               | `%26`          |   `+`  |
+| `"`               | `\"`           |   `"`  |
+| `!`               | `%21`          |   `!`  |
 
-##Example request:
+###POST JSON
+You will have to escape `'`, `"`, `\`, and control codes with a backslash `\` (eg: `\'`, `\"`, `\\`). A JSON encoding library should do this for you.
 
+##Example requests:
+
+GET Query:
   ```bash
-  curl "192.168.0.5:8092/?app=irssi&title=username&msg=hey+what's+up?&icon=C:\Users\Username\Icons\irssi.png"
+  curl "192.168.0.5:8092/?AppID=irssi&Title=username&Message=hey+what's+up?&Icon=C:\Users\Username\Icons\irssi.png"
+  ```
+
+POST JSON:
+  ```bash
+  curl -H "Content-Type: application/json" -X POST -d '{"AppID":"irssi", "Title":"username", "Message":"some message", "Icon":"C:/Users/Username/Icons/irssi.png"}' 192.168.0.7:8092
   ```
 
   ![toast-screenshot](./irssi-notification.png)
