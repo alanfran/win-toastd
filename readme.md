@@ -3,7 +3,7 @@
 toastd lets Windows 10 users receive notifications from another machine. It was designed to work with virtual machine guests, so external IP addresses are ignored by default.
 
 This application listens for requests on port 8092 by default, and it accepts
-GET queries and JSON POSTs. Messages containing ampersands (`&`) are not supported at this time, and they will be converted to `+`.
+GET queries and JSON POSTs.
 
 ##Parameters:
   * AppID:       The name of the application. Toasts are grouped by app in the notification center.
@@ -14,13 +14,13 @@ GET queries and JSON POSTs. Messages containing ampersands (`&`) are not support
 ###GET Query
 Encode the following reserved characters in your query parameters.
 
-| Desired Character |  URL Encoding  | Output |
-|:-----------------:|:--------------:|:------:|
-| ` ` (space)       | `+` or `%20`   |   ` `  |
-| `+`               | `%2b`          |   `+`  |
-| `&`               | `%26`          |   `+`  |
-| `"`               | `\"`           |   `"`  |
-| `!`               | `%21`          |   `!`  |
+| Desired Character |  URL Encoding  |
+|:-----------------:|:--------------:|
+| ` ` (space)       | `+` or `%20`   |
+| `+`               | `%2b`          |
+| `&`               | `%26`          |
+| `"`               | `\"`           |
+| `!`               | `%21`          |
 
 ###POST JSON
 You will have to escape `'`, `"`, `\`, and control codes with a backslash `\` (eg: `\'`, `\"`, `\\`). A JSON encoding library should do this for you.
@@ -45,15 +45,3 @@ POST JSON:
   `-allow-external`      Allows requests from external IPs.  ex: `win-toastd -allow-external`
 
 **Warning: Only use -allow-external with a well-configured firewall.**
-
-##Persisting toasts in the Action Center
-
-You must set a registry key for each `AppID` whose notifications you would like to persist in the Action Center.
-
-For example, if you want your irssi notifications to persist, add the key:
-`HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Notifications\Settings\irssi`
-with a DWORD named `ShowInActionCenter` with value `1`.
-
-I will look into automating this with a parameter in the toastd API.
-
-Thanks to "Passing By" for the solution in [this article's](https://deploywindows.info/2015/12/01/powershell-can-i-use-balloons-toasts-and-notifications/) comments, and Mattias Fors for creating the article.

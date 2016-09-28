@@ -9,11 +9,10 @@ package main
 
 import (
   "github.com/gin-gonic/gin"
-  toast "github.com/jacobmarshall/go-toast"
+  "github.com/go-toast/toast"
   "log"
   "flag"
   "net"
-  "strings"
 )
 
 func handler(c *gin.Context) {
@@ -26,11 +25,7 @@ func handler(c *gin.Context) {
     notification.AppID = "toastd"
   }
 
-  notification = sanitize(notification)
-  err := notification.Push()
-  if err != nil {
-      log.Fatalln(err)
-  }
+  notification.Push()
 }
 
 func gatekeeper(allowExternal bool) gin.HandlerFunc {
@@ -64,19 +59,9 @@ func contains(haystack []net.Addr, needle string) bool {
   return false
 }
 
-// PowerShell does not like ampersands. Attempts to escape the character have been unsuccessful.
-// Waiting on an upstream fix.
-func sanitize(n toast.Notification) toast.Notification {
-  n.AppID = strings.Replace(n.AppID, "&", "+", -1)
-  n.Title = strings.Replace(n.Title, "&", "+", -1)
-  n.Message = strings.Replace(n.Message, "&", "+", -1)
-
-  return n
-}
-
 func main() {
   port := flag.String("port", "8092", "The port you want to listen to. Default: 8092")
-  allowExternal := flag.Bool("allow-external", false, "Allow requests from external IP addresses. {true, false} Default: false")
+  allowExternal := flag.Bool("allow-external", false, "Allow requests from external IP addresses.")
   flag.Parse()
 
   gin.SetMode(gin.ReleaseMode)
