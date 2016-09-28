@@ -10,7 +10,6 @@ package main
 import (
   "github.com/gin-gonic/gin"
   "github.com/go-toast/toast"
-  "log"
   "flag"
   "net"
 )
