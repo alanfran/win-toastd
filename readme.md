@@ -5,13 +5,13 @@ toastd lets Windows 10 users receive notifications from another machine. It was 
 This application listens for requests on port 8092 by default, and it accepts
 GET queries and JSON POSTs.
 
-##Parameters:
+## Parameters:
   * AppID:       The name of the application. Toasts are grouped by app in the notification center.
   * Title:       The title of the toast.
   * Message:     The message body.
   * Icon:        Path to an icon on your Windows system.
 
-###GET Query
+### GET Query
 Encode the following reserved characters in your query parameters.
 
 | Desired Character |  URL Encoding  |
@@ -22,10 +22,10 @@ Encode the following reserved characters in your query parameters.
 | `"`               | `\"`           |
 | `!`               | `%21`          |
 
-###POST JSON
+### POST JSON
 You will have to escape `'`, `"`, `\`, and control codes with a backslash `\` (eg: `\'`, `\"`, `\\`). A JSON encoding library should do this for you.
 
-##Example requests:
+## Example requests:
 
 GET Query:
   ```bash
@@ -38,7 +38,7 @@ POST JSON:
   ```
 
   ![toast-screenshot](./irssi-notification.png)
-##Configuration flags:
+## Configuration flags:
 
   `-port PORTNUMBER`      Changes the listening port.         ex: `win-toastd -port 8082`
 
